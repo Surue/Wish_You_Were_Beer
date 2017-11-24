@@ -1,0 +1,55 @@
+
+Boutons.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bouton_base
+  rotate: false
+  xy: 2, 2
+  size: 240, 239
+  orig: 240, 239
+  offset: 0, 0
+  index: -1
+E
+  rotate: false
+  xy: 244, 2
+  size: 240, 239
+  orig: 240, 239
+  offset: 0, 0
+  index: -1
+Q
+  rotate: false
+  xy: 486, 2
+  size: 240, 239
+  orig: 240, 239
+  offset: 0, 0
+  index: -1
+R
+  rotate: false
+  xy: 1454, 2
+  size: 240, 239
+  orig: 240, 239
+  offset: 0, 0
+  index: -1
+T
+  rotate: false
+  xy: 728, 2
+  size: 240, 239
+  orig: 240, 239
+  offset: 0, 0
+  index: -1
+W
+  rotate: false
+  xy: 970, 2
+  size: 240, 239
+  orig: 240, 239
+  offset: 0, 0
+  index: -1
+Z
+  rotate: false
+  xy: 1212, 2
+  size: 240, 239
+  orig: 240, 239
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,34 @@
+
+Bulles.png
+size: 4096,4096
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bulle
+  rotate: false
+  xy: 2, 1219
+  size: 1215, 1215
+  orig: 1215, 1215
+  offset: 0, 0
+  index: -1
+exclamation
+  rotate: false
+  xy: 1219, 2436
+  size: 1215, 1215
+  orig: 1215, 1215
+  offset: 0, 0
+  index: -1
+interrogation
+  rotate: false
+  xy: 2, 2
+  size: 1215, 1215
+  orig: 1215, 1215
+  offset: 0, 0
+  index: -1
+point
+  rotate: false
+  xy: 2, 2436
+  size: 1215, 1215
+  orig: 1215, 1215
+  offset: 0, 0
+  index: -1
