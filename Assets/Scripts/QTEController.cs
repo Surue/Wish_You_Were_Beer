@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Spine.Unity;
 
 public class QTEController : MonoBehaviour {
 
-    private GameObject[] spawnsPoints;
+    [SerializeField]
+    private GameObject keyPrefab;
+    private SkeletonAnimation skeletonAnimation;
+    
     
     private float timerCurrent = 0.0f;
     private float timeToPress = 2.0f;
@@ -26,6 +30,8 @@ public class QTEController : MonoBehaviour {
     private int keyFailed = 0;
     private const int keyPossibleTofail = 3;
 
+    private GameObject currentKeySprite; 
+
     public enum State {
         IDLE,
         CHOOSING,
@@ -37,7 +43,7 @@ public class QTEController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        spawnsPoints = GameObject.FindGameObjectsWithTag("qteSpawnPoint");
+        skeletonAnimation = keyPrefab.GetComponent<SkeletonAnimation>();
         state = State.IDLE;
 	}
 	
@@ -51,7 +57,6 @@ public class QTEController : MonoBehaviour {
                 else {
                     keyFound = false;
                     ChooseRandomKey();
-                    Debug.Log(keyToPress);
                     timerCurrent = 0.0f;
                     state = State.WAITING;
                     StartCoroutine(WaitForPressRightTouch());
@@ -78,6 +83,11 @@ public class QTEController : MonoBehaviour {
                     state = State.CHOOSING;
                 }
                 break;
+
+            case State.LOSE:
+            case State.WIN:
+                keyPrefab.gameObject.SetActive(false);
+                break;
         }
     }
 
@@ -102,11 +112,41 @@ public class QTEController : MonoBehaviour {
         if (hasFailed) {
             state = State.CHOOSING;
         }
+
+        Destroy(currentKeySprite);
     }
 
     void ChooseRandomKey() {
         for(int i = 0; i < 1; i++)
         keyToPress = (KeyToPress)Random.Range(0, (float)KeyToPress.LENGTH);
+
+        switch (keyToPress) {
+            case KeyToPress.Q:
+                skeletonAnimation.AnimationName = "Q";
+                break;
+
+            case KeyToPress.W:
+                skeletonAnimation.AnimationName = "W";
+                break;
+
+            case KeyToPress.E:
+                skeletonAnimation.AnimationName = "E";
+                break;
+
+            case KeyToPress.R:
+                skeletonAnimation.AnimationName = "R";
+                break;
+
+            case KeyToPress.T:
+                skeletonAnimation.AnimationName = "T";
+                break;
+
+            case KeyToPress.Z:
+                skeletonAnimation.AnimationName = "Z";
+                break;
+        }
+
+        keyPrefab.gameObject.SetActive(true);
     }
     
     KeyCode KeyToPressInString() {
