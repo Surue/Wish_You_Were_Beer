@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     bool isturnedRight;
 
     private Animator animatorController;
+    private QTEController qteController;
+
+    bool isInQTE = false;
 
     enum State
     {
@@ -27,6 +30,7 @@ public class PlayerController : MonoBehaviour
     {
         animatorController = GetComponent<Animator>();
         body = GetComponent<Rigidbody>();
+        qteController = GetComponent<QTEController>();
 	}
 
     void Update ()
@@ -41,6 +45,10 @@ public class PlayerController : MonoBehaviour
                 if (Mathf.Abs(horizontal) > 0.0f)
                 {
                     state = State.MOVING;
+                }
+
+                if (Input.GetKeyDown(KeyCode.Space)) {
+                    state = State.QTE;
                 }
                 break;
 
@@ -62,12 +70,26 @@ public class PlayerController : MonoBehaviour
                 {
                     state = State.IDLE;
                 }
+
+                if (Input.GetKeyDown(KeyCode.Space)) {
+                    state = State.QTE;
+                }
                 break;
 
             case State.DRINK:
                 break;
 
             case State.QTE:
+                animatorController.speed = 0;
+                if (!isInQTE) {
+                    qteController.StartQTE();
+                    isInQTE = true;
+                }
+
+                if(qteController.state == QTEController.State.LOSE || qteController.state == QTEController.State.WIN) {
+                    isInQTE = false;
+                    state = State.MOVING;
+                }
                 break;
         }
 	}
