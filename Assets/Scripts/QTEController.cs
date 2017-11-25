@@ -5,8 +5,7 @@ using UnityEngine;
 public class QTEController : MonoBehaviour {
 
     private GameObject[] spawnsPoints;
-
-    private float timerTotal = 0.0f;
+    
     private float timerCurrent = 0.0f;
     private float timeToPress = 2.0f;
 
@@ -23,6 +22,9 @@ public class QTEController : MonoBehaviour {
     float totalLength = (float)KeyToPress.LENGTH;
 
     private bool keyFound;
+    private int keyToFound = 5;
+    private int keyFailed = 0;
+    private const int keyPossibleTofail = 3;
 
     public enum State {
         IDLE,
@@ -43,42 +45,68 @@ public class QTEController : MonoBehaviour {
 	void Update () {
         switch (state) {
             case State.CHOOSING:
-                keyFound = false;
-                //ChooseRandomKey();
-                keyToPress = KeyToPress.E;
-                Debug.Log(keyToPress);
-                state = State.WAITING;
-                StartCoroutine(WaitForPressRightTouch());
+                if (keyFailed == keyPossibleTofail) {
+                    state = State.LOSE;
+                }
+                else {
+                    keyFound = false;
+                    ChooseRandomKey();
+                    Debug.Log(keyToPress);
+                    timerCurrent = 0.0f;
+                    state = State.WAITING;
+                    StartCoroutine(WaitForPressRightTouch());
+                }
                 break;
 
             case State.WAITING:
-                if (keyFound) {
-                    Debug.Log("Touche trouvée");
-                    state = State.WIN;
+                if (keyFound && keyToFound > 0) {
+                    state = State.CHOOSING;
+                    keyToFound--;
+                }
+
+                if(keyToFound == 0) {
+                    state =  State.WIN;
+                }
+
+                if(keyFailed == keyPossibleTofail) {
+                    state = State.LOSE;
+                }
+
+                timerCurrent += Time.deltaTime;
+                if(timerCurrent > timeToPress) {
+                    keyFailed++;
+                    state = State.CHOOSING;
                 }
                 break;
         }
     }
 
     public void StartQTE() {
-        state = State.CHOOSING;
+        keyFailed = 0;
+        keyToFound = 5;
+        state = State.CHOOSING;    
     }
 
     IEnumerator WaitForPressRightTouch() {
-        while(Time.deltaTime < timeToPress && !keyFound) {
-            //if (Input.GetKeyDown(KeyToPressInString())) {
-            if (Input.GetKeyDown(KeyCode.E)) {
-                Debug.Log("Bonne touche");
+        bool hasFailed = false;
+        while(Time.deltaTime < timeToPress && !keyFound && !hasFailed) {
+            if (Input.GetKey(KeyToPressInString())) {
                 keyFound = true;
+            }else if (Input.anyKeyDown) {
+                keyFailed++;
+                hasFailed = true;
             }
-            Debug.Log("ICI");
             yield return new WaitForFixedUpdate();
+        }
+
+        if (hasFailed) {
+            state = State.CHOOSING;
         }
     }
 
     void ChooseRandomKey() {
         for(int i = 0; i < 1; i++)
-        keyToPress = (KeyToPress)Random.Range(0, (float)KeyToPress.LENGTH - 1);
+        keyToPress = (KeyToPress)Random.Range(0, (float)KeyToPress.LENGTH);
     }
     
     KeyCode KeyToPressInString() {

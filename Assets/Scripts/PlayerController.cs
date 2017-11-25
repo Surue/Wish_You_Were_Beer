@@ -86,7 +86,14 @@ public class PlayerController : MonoBehaviour
                     isInQTE = true;
                 }
 
-                if(qteController.state == QTEController.State.LOSE || qteController.state == QTEController.State.WIN) {
+                if(qteController.state == QTEController.State.LOSE) {
+                    Debug.Log("Lose");
+                    isInQTE = false;
+                    state = State.MOVING;
+                }
+
+                if(qteController.state == QTEController.State.WIN) {
+                    Debug.Log("Win");
                     isInQTE = false;
                     state = State.MOVING;
                 }
