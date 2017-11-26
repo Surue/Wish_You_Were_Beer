@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     Vector2 movement;
     bool isturnedRight;
 
+    [SerializeField]
+    GameObject beerPrefab;
+
     [Header("UI")]
     [SerializeField]
     private Text scoreText;
@@ -46,6 +49,7 @@ public class PlayerController : MonoBehaviour
 	void Start ()
     {
         gameManager = FindObjectOfType<GameManager>();
+        beerPrefab.SetActive(false);
         scoreText.text = "";
         animatorController = GetComponent<Animator>();
         body = GetComponent<Rigidbody>();
@@ -66,8 +70,8 @@ public class PlayerController : MonoBehaviour
                     state = State.MOVING;
                 }
 
-                if (Input.GetKeyDown(KeyCode.Space)) {
-                    state = State.QTE;
+                if (Input.GetKeyDown(KeyCode.Space) && inTrigger) {
+                    state = State.DRINK;
                 }
                 break;
 
@@ -91,15 +95,18 @@ public class PlayerController : MonoBehaviour
                 }
 
                 if (Input.GetKeyDown(KeyCode.Space) && inTrigger) {
-                    state = State.QTE;
+                    state = State.DRINK;
                 }
                 break;
 
             case State.DRINK:
+                animatorController.speed = 1;
+                animatorController.SetBool("Drinking", true);
+                beerPrefab.SetActive(true);
+                state = State.QTE;
                 break;
 
             case State.QTE:
-                animatorController.speed = 0;
                 
                 if (!isInQTE) {
                     qteController.StartQTE();
@@ -115,6 +122,8 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("Lose");
                     fails++;
                     isInQTE = false;
+                    animatorController.SetBool("Drinking", false);
+                    beerPrefab.SetActive(false);
                     state = State.MOVING;
                 }
 
@@ -124,6 +133,8 @@ public class PlayerController : MonoBehaviour
                     score++;
                     scoreText.text = score.ToString();
                     isInQTE = false;
+                    animatorController.SetBool("Drinking", false);
+                    beerPrefab.SetActive(false);
                     state = State.MOVING;
                 }
                 break;

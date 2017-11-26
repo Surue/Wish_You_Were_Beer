@@ -205,4 +205,8 @@ public class QTEController : MonoBehaviour {
     public void ForceStop() {
         state = State.LOSE;
     }
+
+    public bool isRunning() {
+        return state == State.WAITING || state == State.CHOOSING;
+    }
 }

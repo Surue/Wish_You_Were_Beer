@@ -11,6 +11,8 @@ public class CustomerManager : MonoBehaviour {
     GameObject dotPrefab;
     SkeletonAnimation skeletonAnimation;
 
+    QTEController qteController;
+
     enum State {
         DRINKING,
         WC
@@ -22,6 +24,7 @@ public class CustomerManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        qteController = FindObjectOfType<QTEController>();
         for(int i = 0; i < customers.Length; i++) {
             states[i] = State.DRINKING;
         }
@@ -33,6 +36,14 @@ public class CustomerManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        GameObject choosenBeer = null;
+        foreach (Transform child in customers[choosenOne].transform) {
+            if (child.CompareTag("Beer")) {
+                choosenBeer = child.gameObject;
+            }
+        }
+        
+
         for(int i = 0; i < customers.Length; i++) {
             if (states[i] == State.WC) {
                 customers[i].GetComponentInChildren<MeshRenderer>().enabled = false;
@@ -54,7 +65,7 @@ public class CustomerManager : MonoBehaviour {
                 }
             }
         }
-	}
+    }
 
     IEnumerator GoesInWC() {
         while (true) {
@@ -63,11 +74,20 @@ public class CustomerManager : MonoBehaviour {
             states[choosenOne] = State.DRINKING;
             customers[choosenOne].GetComponentInChildren<MeshRenderer>().enabled = false;
             dotPrefab.SetActive(false);
+            yield return new WaitForSeconds(0);
+            if (beerDrunk) {
+                GameObject bulle = null;
+                foreach (Transform child in customers[choosenOne].transform) {
+                    if (child.CompareTag("Bulle")) {
+                        bulle = child.gameObject;
+                    }
+                }
+                bulle.SetActive(true);
+                yield return new WaitForSeconds(2);
+                bulle.SetActive(false);
+            }
             yield return new WaitForSeconds(2);
             //Wait for next one
-            if (beerDrunk) {
-
-            }
             ChooseOneCustomerThatGoesInWC();
             beerDrunk = false;
             skeletonAnimation.Initialize(true);
