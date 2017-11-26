@@ -77,7 +77,7 @@ public class CustomerManager : MonoBehaviour {
             beerDrunk = false;
             skeletonAnimation.Initialize(true);
             dotPrefab.SetActive(true);
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(8);
             //IN WC
             states[choosenOne] = State.DRINKING;
             customers[choosenOne].GetComponentInChildren<MeshRenderer>().enabled = false;
