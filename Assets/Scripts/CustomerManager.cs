@@ -69,12 +69,35 @@ public class CustomerManager : MonoBehaviour {
 
     IEnumerator GoesInWC() {
         while (true) {
-            yield return new WaitForSeconds(10);
+            
+            
+            yield return new WaitForSeconds(2);
+            //Wait for next one
+            ChooseOneCustomerThatGoesInWC();
+            beerDrunk = false;
+            skeletonAnimation.Initialize(true);
+            dotPrefab.SetActive(true);
+            yield return new WaitForSeconds(5);
             //IN WC
             states[choosenOne] = State.DRINKING;
             customers[choosenOne].GetComponentInChildren<MeshRenderer>().enabled = false;
             dotPrefab.SetActive(false);
             yield return new WaitForSeconds(0);
+            Debug.Log(qteController.state);
+            if (!beerDrunk) {
+                Debug.Log("On s'est fait prendre");
+                GameObject bulle = null;
+                foreach (Transform child in customers[choosenOne].transform) {
+                    if (child.CompareTag("Bulle")) {
+                        bulle = child.gameObject;
+                    }
+                }
+                bulle.GetComponent<SkeletonAnimation>().AnimationName = "Exclamation";
+                Debug.Log(bulle.GetComponent<SkeletonAnimation>());
+                bulle.SetActive(true);
+                yield return new WaitForSeconds(2);
+                bulle.SetActive(false);
+            }
             if (beerDrunk) {
                 GameObject bulle = null;
                 foreach (Transform child in customers[choosenOne].transform) {
@@ -82,16 +105,11 @@ public class CustomerManager : MonoBehaviour {
                         bulle = child.gameObject;
                     }
                 }
+                bulle.GetComponent<SkeletonAnimation>().AnimationName = "Interogation";
                 bulle.SetActive(true);
                 yield return new WaitForSeconds(2);
                 bulle.SetActive(false);
             }
-            yield return new WaitForSeconds(2);
-            //Wait for next one
-            ChooseOneCustomerThatGoesInWC();
-            beerDrunk = false;
-            skeletonAnimation.Initialize(true);
-            dotPrefab.SetActive(true);
         }
     }
 

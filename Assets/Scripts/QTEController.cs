@@ -42,6 +42,7 @@ public class QTEController : MonoBehaviour {
     private GameObject currentKeySprite; 
 
     public enum State {
+        NO_START,
         IDLE,
         CHOOSING,
         WAITING,
@@ -54,7 +55,7 @@ public class QTEController : MonoBehaviour {
     void Start () {
         player = FindObjectOfType<PlayerController>();
         skeletonAnimation = keyPrefab.GetComponent<SkeletonAnimation>();
-        state = State.IDLE;
+        state = State.NO_START;
 
         //UI
         jaugeBackground.enabled = false;
@@ -101,16 +102,16 @@ public class QTEController : MonoBehaviour {
                 
             case State.WIN:
                 keyPrefab.gameObject.SetActive(false);
-                state = State.IDLE;
                 jaugeBackground.enabled = false;
                 jaugeProgressing.enabled = false;
+                state = State.NO_START;
                 break;
 
             case State.LOSE:
                 keyPrefab.gameObject.SetActive(false);
-                state = State.IDLE;
                 jaugeBackground.enabled = false;
                 jaugeProgressing.enabled = false;
+                state = State.NO_START;
                 break;
         }
     }
@@ -207,6 +208,6 @@ public class QTEController : MonoBehaviour {
     }
 
     public bool isRunning() {
-        return state == State.WAITING || state == State.CHOOSING;
+        return state == State.WAITING || state == State.CHOOSING || state == State.IDLE;
     }
 }
