@@ -2,12 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Spine.Unity;
+using UnityEngine.UI;
 
 public class QTEController : MonoBehaviour {
 
     [SerializeField]
     private GameObject keyPrefab;
     private SkeletonAnimation skeletonAnimation;
+
+    [Header("UI")]
+    [SerializeField]
+    private Image jaugeBackground;
+    [SerializeField]
+    private Image jaugeProgressing;
+
+    private PlayerController player;
     
     
     private float timerCurrent = 0.0f;
@@ -25,7 +34,8 @@ public class QTEController : MonoBehaviour {
     private KeyToPress keyToPress;
 
     private bool keyFound;
-    private int keyToFound = 5;
+    private float keyToFound = 5;
+    private const float keyToFoundOriginal = 5;
     private int keyFailed = 0;
     private const int keyPossibleTofail = 3;
 
@@ -42,12 +52,18 @@ public class QTEController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        player = FindObjectOfType<PlayerController>();
         skeletonAnimation = keyPrefab.GetComponent<SkeletonAnimation>();
         state = State.IDLE;
+
+        //UI
+        jaugeBackground.enabled = false;
+        jaugeProgressing.enabled = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        jaugeProgressing.fillAmount = ((keyToFoundOriginal - keyToFound) / keyToFoundOriginal);
         switch (state) {
             case State.CHOOSING:
                 if (keyFailed == keyPossibleTofail) {
@@ -64,6 +80,7 @@ public class QTEController : MonoBehaviour {
 
             case State.WAITING:
                 if (keyFound && keyToFound > 0) {
+                    player.AddScore(10);
                     state = State.CHOOSING;
                     keyToFound--;
                 }
@@ -82,10 +99,20 @@ public class QTEController : MonoBehaviour {
                     state = State.CHOOSING;
                 }
                 break;
+                
+            case State.WIN:
+                player.AddScore(50);
+                keyPrefab.gameObject.SetActive(false);
+                state = State.IDLE;
+                jaugeBackground.enabled = false;
+                jaugeProgressing.enabled = false;
+                break;
 
             case State.LOSE:
-            case State.WIN:
                 keyPrefab.gameObject.SetActive(false);
+                state = State.IDLE;
+                jaugeBackground.enabled = false;
+                jaugeProgressing.enabled = false;
                 break;
         }
     }
@@ -93,7 +120,9 @@ public class QTEController : MonoBehaviour {
     public void StartQTE() {
         keyFailed = 0;
         keyToFound = 5;
-        state = State.CHOOSING;    
+        state = State.CHOOSING;
+        jaugeBackground.enabled = true;
+        jaugeProgressing.enabled = true;
     }
 
     IEnumerator WaitForPressRightTouch() {

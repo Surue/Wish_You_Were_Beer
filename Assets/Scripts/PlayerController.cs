@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,13 +13,24 @@ public class PlayerController : MonoBehaviour
     Vector2 movement;
     bool isturnedRight;
 
+    [Header("UI")]
+    [SerializeField]
+    private Text scoreText;
+
     [SerializeField]
     CustomerManager customerManager;
 
     private Animator animatorController;
     private QTEController qteController;
 
+    private GameManager gameManager;
+
     bool isInQTE = false;
+
+    const int failMax = 3;
+    int fails = 0;
+
+    private float score;
 
     enum State
     {
@@ -31,6 +43,8 @@ public class PlayerController : MonoBehaviour
 
 	void Start ()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        scoreText.text = "";
         animatorController = GetComponent<Animator>();
         body = GetComponent<Rigidbody>();
         qteController = GetComponent<QTEController>();
@@ -97,6 +111,7 @@ public class PlayerController : MonoBehaviour
 
                 if (qteController.state == QTEController.State.LOSE) {
                     Debug.Log("Lose");
+                    fails++;
                     isInQTE = false;
                     state = State.MOVING;
                 }
@@ -108,7 +123,16 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
         }
+
+        if(fails == failMax) {
+            gameManager.Defeate();
+        }
 	}
+
+    public void AddScore(float scoreToAdd) {
+        score += scoreToAdd;
+        scoreText.text = score.ToString();
+    }
 
     void FixedUpdate()
     {
