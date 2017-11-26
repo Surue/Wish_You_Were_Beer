@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - qteSpawnPoint
+  - Halo
   layers:
   - Default
   - TransparentFX

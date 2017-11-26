@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
 
     private GameManager gameManager;
 
+    bool inTrigger = false;
+
     bool isInQTE = false;
 
     const int failMax = 3;
@@ -88,7 +90,7 @@ public class PlayerController : MonoBehaviour
                     state = State.IDLE;
                 }
 
-                if (Input.GetKeyDown(KeyCode.Space)) {
+                if (Input.GetKeyDown(KeyCode.Space) && inTrigger) {
                     state = State.QTE;
                 }
                 break;
@@ -118,6 +120,9 @@ public class PlayerController : MonoBehaviour
 
                 if(qteController.state == QTEController.State.WIN) {
                     Debug.Log("Win");
+                    customerManager.HasDrunk();
+                    score++;
+                    scoreText.text = score.ToString();
                     isInQTE = false;
                     state = State.MOVING;
                 }
@@ -129,11 +134,6 @@ public class PlayerController : MonoBehaviour
         }
 	}
 
-    public void AddScore(float scoreToAdd) {
-        score += scoreToAdd;
-        scoreText.text = score.ToString();
-    }
-
     void FixedUpdate()
     {
         if(state == State.MOVING)
@@ -144,6 +144,14 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (other == customerManager.GetTriggerWC()) {
+            inTrigger = true;
+        }
+    }
 
+    private void OnTriggerExit(Collider other) {
+        if (other == customerManager.GetTriggerWC()) {
+            inTrigger = false;
+        }
     }
 }

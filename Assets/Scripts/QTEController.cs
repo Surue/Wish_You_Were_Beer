@@ -80,7 +80,6 @@ public class QTEController : MonoBehaviour {
 
             case State.WAITING:
                 if (keyFound && keyToFound > 0) {
-                    player.AddScore(10);
                     state = State.CHOOSING;
                     keyToFound--;
                 }
@@ -101,7 +100,6 @@ public class QTEController : MonoBehaviour {
                 break;
                 
             case State.WIN:
-                player.AddScore(50);
                 keyPrefab.gameObject.SetActive(false);
                 state = State.IDLE;
                 jaugeBackground.enabled = false;
@@ -120,6 +118,7 @@ public class QTEController : MonoBehaviour {
     public void StartQTE() {
         keyFailed = 0;
         keyToFound = 5;
+        keyFound = false;
         state = State.CHOOSING;
         jaugeBackground.enabled = true;
         jaugeProgressing.enabled = true;
