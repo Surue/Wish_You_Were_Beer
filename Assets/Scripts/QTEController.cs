@@ -98,7 +98,7 @@ public class QTEController : MonoBehaviour {
 
     IEnumerator WaitForPressRightTouch() {
         bool hasFailed = false;
-        while(Time.deltaTime < timeToPress && !keyFound && !hasFailed) {
+        while(Time.deltaTime < timeToPress && !keyFound && !hasFailed && state != State.LOSE) {
             if (Input.GetKey(KeyToPressInString())) {
                 keyFound = true;
             }else if (Input.anyKeyDown) {
@@ -172,5 +172,9 @@ public class QTEController : MonoBehaviour {
                 return KeyCode.A;
         }
         
+    }
+
+    public void ForceStop() {
+        state = State.LOSE;
     }
 }

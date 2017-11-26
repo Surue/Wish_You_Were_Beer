@@ -59,4 +59,18 @@ public class CustomerManager : MonoBehaviour {
 
         states[choosenOne] = State.WC;
     }
+
+    public bool IsEveryoneDrinking() {
+        foreach(State state in states) {
+            if(state == State.WC) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void hasDrunk() {
+
+    }
 }

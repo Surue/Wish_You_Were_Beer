@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     Vector2 movement;
     bool isturnedRight;
 
+    [SerializeField]
+    CustomerManager customerManager;
+
     private Animator animatorController;
     private QTEController qteController;
 
@@ -81,12 +84,18 @@ public class PlayerController : MonoBehaviour
 
             case State.QTE:
                 animatorController.speed = 0;
+                
                 if (!isInQTE) {
                     qteController.StartQTE();
                     isInQTE = true;
                 }
 
-                if(qteController.state == QTEController.State.LOSE) {
+                if (customerManager.IsEveryoneDrinking()) {
+                    qteController.ForceStop();
+                    isInQTE = false;
+                }
+
+                if (qteController.state == QTEController.State.LOSE) {
                     Debug.Log("Lose");
                     isInQTE = false;
                     state = State.MOVING;
