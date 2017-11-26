@@ -97,7 +97,6 @@ public class PlayerController : MonoBehaviour
                     isInQTE = false;
                     state = State.MOVING;
                 }
-                
                 break;
         }
 	}

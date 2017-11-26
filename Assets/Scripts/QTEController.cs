@@ -23,7 +23,6 @@ public class QTEController : MonoBehaviour {
         LENGTH
     }
     private KeyToPress keyToPress;
-    float totalLength = (float)KeyToPress.LENGTH;
 
     private bool keyFound;
     private int keyToFound = 5;
